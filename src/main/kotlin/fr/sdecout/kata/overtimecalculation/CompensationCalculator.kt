@@ -21,14 +21,12 @@ object CompensationCalculator {
         if (briefing.allowsExceedingOvertimeHoursRate1(unionizedAssignment)) overtimeTotalDuration
         else minOf(overtimeTotalDuration, MAX_OVERTIME_HOURS_RATE_1)
 
-    private fun resolveOvertimeHoursRate2(assignment: Assignment, remainingOvertimeDuration: Duration): Duration {
-        var hoursOvertimeRate2 = remainingOvertimeDuration
-        if (assignment.isUnionized) {
-            val threshold = calculateThreshold(assignment, THRESHOLD_OVERTIME_HOURS_RATE_2)
-            hoursOvertimeRate2 = minOf(hoursOvertimeRate2, threshold)
-        }
-        return hoursOvertimeRate2
-    }
+    private fun resolveOvertimeHoursRate2(assignment: Assignment, remainingOvertimeDuration: Duration) =
+        if (assignment.isUnionized) minOf(
+            remainingOvertimeDuration,
+            calculateThreshold(assignment, THRESHOLD_OVERTIME_HOURS_RATE_2)
+        )
+        else remainingOvertimeDuration
 
     private fun calculateThreshold(assignment: Assignment, thresholdForUnionizedAssignments: Duration) = assignment
         .let { assignment.duration - thresholdForUnionizedAssignments }
