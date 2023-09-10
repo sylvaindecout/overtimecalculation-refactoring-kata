@@ -14,9 +14,7 @@ object CompensationCalculator {
         require(!overtimeTotalDuration.isNegative()) { "Overtime total duration must not be negative ($overtimeTotalDuration)" }
         var hoursOvertimeRate1 = Duration.ZERO
         var hoursOvertimeRate2 = Duration.ZERO
-        val isWatCodeUnion = briefing.watCode && assignment.isUnionized
-        val isWatCodeNonUnionForeign = briefing.watCode && !assignment.isUnionized && briefing.foreign
-        if (!briefing.watCode && !briefing.z3 && !assignment.isUnionized || briefing.hbmo && assignment.isUnionized || isWatCodeNonUnionForeign || isWatCodeUnion || briefing.foreign && !assignment.isUnionized) {
+        if (canExceedMaxOvertimeHoursRate1(briefing, assignment)) {
             hoursOvertimeRate1 = overtimeTotalDuration
         } else {
             if (overtimeTotalDuration <= Duration.ZERO) {
@@ -34,6 +32,13 @@ object CompensationCalculator {
         }
         return Overtime(hoursOvertimeRate1, hoursOvertimeRate2)
     }
+
+    private fun canExceedMaxOvertimeHoursRate1(briefing: Briefing, assignment: Assignment) =
+        (!briefing.watCode && !briefing.z3 && !assignment.isUnionized)
+                || (briefing.hbmo && assignment.isUnionized)
+                || (briefing.watCode && !assignment.isUnionized && briefing.foreign)
+                || (briefing.watCode && assignment.isUnionized)
+                || (briefing.foreign && !assignment.isUnionized)
 
     private fun calculateThreshold(assignment: Assignment, threshold: Duration): Duration {
         val remainder: Duration = assignment.duration - threshold
