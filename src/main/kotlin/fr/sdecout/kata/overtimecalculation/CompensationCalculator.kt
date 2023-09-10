@@ -14,11 +14,9 @@ object CompensationCalculator {
         require(!overtimeTotalDuration.isNegative()) { "Overtime total duration must not be negative ($overtimeTotalDuration)" }
         return if (canExceedMaxOvertimeHoursRate1(briefing, assignment)) {
             Overtime(overtimeTotalDuration)
-        } else if (overtimeTotalDuration <= MAX_OVERTIME_HOURS_RATE_1) {
-            Overtime(overtimeTotalDuration)
         } else {
-            val hoursOvertimeRate1 = MAX_OVERTIME_HOURS_RATE_1
-            var hoursOvertimeRate2 = overtimeTotalDuration - MAX_OVERTIME_HOURS_RATE_1
+            val hoursOvertimeRate1 = minOf(overtimeTotalDuration, MAX_OVERTIME_HOURS_RATE_1)
+            var hoursOvertimeRate2 = overtimeTotalDuration - hoursOvertimeRate1
             if (assignment.isUnionized) {
                 val threshold = calculateThreshold(assignment, THRESHOLD_OVERTIME_HOURS_RATE_2)
                 hoursOvertimeRate2 = minOf(hoursOvertimeRate2, threshold)
