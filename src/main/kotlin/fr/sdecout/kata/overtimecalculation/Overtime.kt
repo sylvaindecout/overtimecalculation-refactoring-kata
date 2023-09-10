@@ -4,7 +4,7 @@ import kotlin.time.Duration
 
 data class Overtime(
     val hoursRate1: Duration,
-    val hoursRate2: Duration,
+    val hoursRate2: Duration = Duration.ZERO,
 ) {
     init {
         require(!hoursRate1.isNegative()) { "Hours rate 1 must not be negative ($hoursRate1)" }
