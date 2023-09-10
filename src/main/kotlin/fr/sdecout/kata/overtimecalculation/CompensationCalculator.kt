@@ -14,8 +14,6 @@ object CompensationCalculator {
         require(!overtimeTotalDuration.isNegative()) { "Overtime total duration must not be negative ($overtimeTotalDuration)" }
         return if (canExceedMaxOvertimeHoursRate1(briefing, assignment)) {
             Overtime(overtimeTotalDuration)
-        } else if (overtimeTotalDuration <= Duration.ZERO) {
-            Overtime(overtimeTotalDuration)
         } else if (overtimeTotalDuration <= MAX_OVERTIME_HOURS_RATE_1) {
             Overtime(overtimeTotalDuration)
         } else {
