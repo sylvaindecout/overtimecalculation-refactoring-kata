@@ -13,11 +13,7 @@ object CompensationCalculator {
         val overtimeTotalDuration = hoursOvertimeTotal.toLong().hours
         require(!overtimeTotalDuration.isNegative()) { "Overtime total duration must not be negative ($overtimeTotalDuration)" }
         val hoursOvertimeRate1 = resolveOvertimeHoursRate1(overtimeTotalDuration, assignment, briefing)
-        var hoursOvertimeRate2 = overtimeTotalDuration - hoursOvertimeRate1
-        if (assignment.isUnionized) {
-            val threshold = calculateThreshold(assignment, THRESHOLD_OVERTIME_HOURS_RATE_2)
-            hoursOvertimeRate2 = minOf(hoursOvertimeRate2, threshold)
-        }
+        val hoursOvertimeRate2 = resolveOvertimeHoursRate2(assignment, overtimeTotalDuration - hoursOvertimeRate1)
         return Overtime(hoursOvertimeRate1, hoursOvertimeRate2)
     }
 
@@ -31,6 +27,15 @@ object CompensationCalculator {
                 || (briefing.watCode && !assignment.isUnionized && briefing.foreign)
                 || (briefing.watCode && assignment.isUnionized)
                 || (briefing.foreign && !assignment.isUnionized)
+
+    private fun resolveOvertimeHoursRate2(assignment: Assignment, remainingOvertimeDuration: Duration): Duration {
+        var hoursOvertimeRate2 = remainingOvertimeDuration
+        if (assignment.isUnionized) {
+            val threshold = calculateThreshold(assignment, THRESHOLD_OVERTIME_HOURS_RATE_2)
+            hoursOvertimeRate2 = minOf(hoursOvertimeRate2, threshold)
+        }
+        return hoursOvertimeRate2
+    }
 
     private fun calculateThreshold(assignment: Assignment, threshold: Duration): Duration {
         val remainder: Duration = assignment.duration - threshold
