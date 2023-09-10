@@ -12,21 +12,14 @@ object CompensationCalculator {
     fun calculateOvertime(hoursOvertimeTotal: BigDecimal, assignment: Assignment, briefing: Briefing): Overtime {
         val overtimeTotalDuration = hoursOvertimeTotal.toLong().hours
         require(!overtimeTotalDuration.isNegative()) { "Overtime total duration must not be negative ($overtimeTotalDuration)" }
-        val hoursOvertimeRate1 = resolveOvertimeHoursRate1(overtimeTotalDuration, assignment, briefing)
+        val hoursOvertimeRate1 = resolveOvertimeHoursRate1(overtimeTotalDuration, assignment.isUnionized, briefing)
         val hoursOvertimeRate2 = resolveOvertimeHoursRate2(assignment, overtimeTotalDuration - hoursOvertimeRate1)
         return Overtime(hoursOvertimeRate1, hoursOvertimeRate2)
     }
 
-    private fun resolveOvertimeHoursRate1(overtimeTotalDuration: Duration, assignment: Assignment, briefing: Briefing) =
-        if (canExceedMaxOvertimeHoursRate1(briefing, assignment)) overtimeTotalDuration
+    private fun resolveOvertimeHoursRate1(overtimeTotalDuration: Duration, unionizedAssignment: Boolean, briefing: Briefing) =
+        if (briefing.allowsExceedingOvertimeHoursRate1(unionizedAssignment)) overtimeTotalDuration
         else minOf(overtimeTotalDuration, MAX_OVERTIME_HOURS_RATE_1)
-
-    private fun canExceedMaxOvertimeHoursRate1(briefing: Briefing, assignment: Assignment) =
-        (!briefing.watCode && !briefing.z3 && !assignment.isUnionized)
-                || (briefing.hbmo && assignment.isUnionized)
-                || (briefing.watCode && !assignment.isUnionized && briefing.foreign)
-                || (briefing.watCode && assignment.isUnionized)
-                || (briefing.foreign && !assignment.isUnionized)
 
     private fun resolveOvertimeHoursRate2(assignment: Assignment, remainingOvertimeDuration: Duration): Duration {
         var hoursOvertimeRate2 = remainingOvertimeDuration
