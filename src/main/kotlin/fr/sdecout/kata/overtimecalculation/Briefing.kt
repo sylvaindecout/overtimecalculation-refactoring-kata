@@ -7,10 +7,7 @@ data class Briefing(
     val hbmo: Boolean,
 ) {
 
-    fun allowsExceedingOvertimeHoursRate1(unionizedAssignment: Boolean) = (!watCode && !z3 && !unionizedAssignment)
-            || (hbmo && unionizedAssignment)
-            || (watCode && !unionizedAssignment && foreign)
-            || (watCode && unionizedAssignment)
-            || (foreign && !unionizedAssignment)
+    fun allowsExceedingOvertimeHoursRate1(unionizedAssignment: Boolean) =
+        if (unionizedAssignment) hbmo || watCode else (!watCode && !z3) || foreign
 
 }
