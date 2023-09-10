@@ -13,3 +13,4 @@ out/
 .gradle
 hs_err_pid*
 .batect
+src/test/resources/**/*.received.txt

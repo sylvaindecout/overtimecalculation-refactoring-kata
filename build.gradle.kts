@@ -1,5 +1,6 @@
-val jvmVersion = "17"
+val approvalTestsVersion = "18.7.1"
 val kotestVersion = "5.7.2"
+val jvmVersion = "17"
 
 plugins {
     kotlin("jvm") version "1.9.10"
@@ -15,6 +16,9 @@ dependencies {
     testImplementation("io.kotest", "kotest-runner-junit5", kotestVersion)
     testImplementation("io.kotest", "kotest-property", kotestVersion)
     testImplementation("io.kotest", "kotest-assertions-core", kotestVersion)
+
+    testImplementation(kotlin("test-junit5"))
+    testImplementation("com.approvaltests", "approvaltests", approvalTestsVersion)
 }
 
 tasks {
@@ -24,7 +28,7 @@ tasks {
         }
     }
     compileTestKotlin {
-        kotlinOptions{
+        kotlinOptions {
             jvmTarget = jvmVersion
         }
     }
