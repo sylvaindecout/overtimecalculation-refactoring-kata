@@ -30,13 +30,11 @@ object CompensationCalculator {
         return hoursOvertimeRate2
     }
 
-    private fun calculateThreshold(assignment: Assignment, threshold: Duration): Duration {
-        val remainder: Duration = assignment.duration - threshold
-        return if (remainder.isNegative()) {
-            (assignment.duration.inWholeSeconds / 3600).hours
-        } else {
-            threshold
+    private fun calculateThreshold(assignment: Assignment, thresholdForUnionizedAssignments: Duration) = assignment
+        .let { assignment.duration - thresholdForUnionizedAssignments }
+        .let { remainder ->
+            if (remainder.isNegative()) (assignment.duration.inWholeSeconds / 3600).hours
+            else thresholdForUnionizedAssignments
         }
-    }
 
 }
