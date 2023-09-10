@@ -11,6 +11,7 @@ object CompensationCalculator {
 
     fun calculateOvertime(hoursOvertimeTotal: BigDecimal, assignment: Assignment, briefing: Briefing): Overtime {
         val overtimeTotalDuration = hoursOvertimeTotal.toLong().hours
+        require(!overtimeTotalDuration.isNegative()) { "Overtime total duration must not be negative ($overtimeTotalDuration)" }
         var hoursOvertimeRate1 = Duration.ZERO
         var hoursOvertimeRate2 = Duration.ZERO
         val isWatCodeUnion = briefing.watCode && assignment.isUnionized
