@@ -16,18 +16,16 @@ object CompensationCalculator {
         var hoursOvertimeRate2 = Duration.ZERO
         if (canExceedMaxOvertimeHoursRate1(briefing, assignment)) {
             hoursOvertimeRate1 = overtimeTotalDuration
+        } else if (overtimeTotalDuration <= Duration.ZERO) {
+            return Overtime(hoursOvertimeRate1, hoursOvertimeRate2)
+        } else if (overtimeTotalDuration <= MAX_OVERTIME_HOURS_RATE_1) {
+            hoursOvertimeRate1 = overtimeTotalDuration
         } else {
-            if (overtimeTotalDuration <= Duration.ZERO) {
-                return Overtime(hoursOvertimeRate1, hoursOvertimeRate2)
-            } else if (overtimeTotalDuration <= MAX_OVERTIME_HOURS_RATE_1) {
-                hoursOvertimeRate1 = overtimeTotalDuration
-            } else {
-                hoursOvertimeRate1 = MAX_OVERTIME_HOURS_RATE_1
-                hoursOvertimeRate2 = overtimeTotalDuration - MAX_OVERTIME_HOURS_RATE_1
-                if (assignment.isUnionized) {
-                    val threshold = calculateThreshold(assignment, THRESHOLD_OVERTIME_HOURS_RATE_2)
-                    hoursOvertimeRate2 = minOf(hoursOvertimeRate2, threshold)
-                }
+            hoursOvertimeRate1 = MAX_OVERTIME_HOURS_RATE_1
+            hoursOvertimeRate2 = overtimeTotalDuration - MAX_OVERTIME_HOURS_RATE_1
+            if (assignment.isUnionized) {
+                val threshold = calculateThreshold(assignment, THRESHOLD_OVERTIME_HOURS_RATE_2)
+                hoursOvertimeRate2 = minOf(hoursOvertimeRate2, threshold)
             }
         }
         return Overtime(hoursOvertimeRate1, hoursOvertimeRate2)
