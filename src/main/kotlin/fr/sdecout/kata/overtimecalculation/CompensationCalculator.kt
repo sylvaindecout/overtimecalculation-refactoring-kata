@@ -5,9 +5,6 @@ import kotlin.time.Duration.Companion.hours
 
 object CompensationCalculator {
 
-    val MAX_OVERTIME_HOURS_RATE_1 = 10.hours
-    val THRESHOLD_OVERTIME_HOURS_RATE_2 = 6.hours
-
     fun calculateOvertime(overtimeTotalDuration: Duration, assignment: Assignment, briefing: Briefing): Overtime {
         require(!overtimeTotalDuration.isNegative()) { "Overtime total duration must not be negative ($overtimeTotalDuration)" }
         val overtimeInRate1 = resolveOvertimeInRate1(overtimeTotalDuration, assignment.isUnionized, briefing)
@@ -17,20 +14,12 @@ object CompensationCalculator {
 
     private fun resolveOvertimeInRate1(overtimeTotalDuration: Duration, unionizedAssignment: Boolean, briefing: Briefing) =
         if (briefing.allowsExceedingOvertimeLimitInRate1(unionizedAssignment)) overtimeTotalDuration
-        else minOf(overtimeTotalDuration, MAX_OVERTIME_HOURS_RATE_1)
+        else minOf(overtimeTotalDuration, 10.hours)
 
     private fun resolveOvertimeInRate2(assignment: Assignment, remainingOvertimeDuration: Duration) =
-        if (assignment.isUnionized) minOf(
-            remainingOvertimeDuration,
-            calculateThreshold(assignment, THRESHOLD_OVERTIME_HOURS_RATE_2)
-        )
+        if (assignment.isUnionized) minOf(remainingOvertimeDuration, assignment.duration.truncateToHours(), 6.hours)
         else remainingOvertimeDuration
 
-    private fun calculateThreshold(assignment: Assignment, thresholdForUnionizedAssignments: Duration) = assignment
-        .let { assignment.duration - thresholdForUnionizedAssignments }
-        .let { remainder ->
-            if (remainder.isNegative()) (assignment.duration.inWholeSeconds / 3600).hours
-            else thresholdForUnionizedAssignments
-        }
+    private fun Duration.truncateToHours() = (this.inWholeSeconds / 3600).hours
 
 }
