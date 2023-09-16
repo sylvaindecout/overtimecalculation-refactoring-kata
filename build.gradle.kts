@@ -1,9 +1,11 @@
 val approvalTestsVersion = "18.7.1"
 val kotestVersion = "5.7.2"
 val jvmVersion = "17"
+val pitestJunit5PluginVersion = "1.2.0"
 
 plugins {
     kotlin("jvm") version "1.9.10"
+    id("info.solidsoft.pitest") version "1.9.11"
 }
 
 repositories {
@@ -34,5 +36,11 @@ tasks {
     }
     withType<Test>().configureEach {
         useJUnitPlatform()
+    }
+    pitest {
+        junit5PluginVersion.set(pitestJunit5PluginVersion)
+        outputFormats.add("HTML")
+        excludedGroups.addAll("Snapshot")
+        targetClasses.set(listOf("fr.sdecout.kata.*"))
     }
 }

@@ -6,6 +6,8 @@
 
 Run tests: `./gradlew test`
 
+Run mutation coverage: `./gradlew pitest`
+
 ## Problem
 
 Source: [Emily Bache](https://github.com/emilybache/OvertimeCalculation-Refactoring-Kata)
