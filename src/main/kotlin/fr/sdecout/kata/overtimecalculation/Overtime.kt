@@ -3,11 +3,11 @@ package fr.sdecout.kata.overtimecalculation
 import kotlin.time.Duration
 
 data class Overtime(
-    val hoursRate1: Duration,
-    val hoursRate2: Duration = Duration.ZERO,
+    val timeInRate1: Duration,
+    val timeInRate2: Duration = Duration.ZERO,
 ) {
     init {
-        require(!hoursRate1.isNegative()) { "Hours rate 1 must not be negative ($hoursRate1)" }
-        require(!hoursRate2.isNegative()) { "Hours rate 2 must not be negative ($hoursRate2)" }
+        require(!timeInRate1.isNegative()) { "Time in rate 1 must not be negative ($timeInRate1)" }
+        require(!timeInRate2.isNegative()) { "Time in rate 2 must not be negative ($timeInRate2)" }
     }
 }
