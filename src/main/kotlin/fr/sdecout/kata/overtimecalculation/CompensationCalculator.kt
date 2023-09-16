@@ -1,6 +1,5 @@
 package fr.sdecout.kata.overtimecalculation
 
-import java.math.BigDecimal
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 
@@ -9,8 +8,7 @@ object CompensationCalculator {
     val MAX_OVERTIME_HOURS_RATE_1 = 10.hours
     val THRESHOLD_OVERTIME_HOURS_RATE_2 = 6.hours
 
-    fun calculateOvertime(hoursOvertimeTotal: BigDecimal, assignment: Assignment, briefing: Briefing): Overtime {
-        val overtimeTotalDuration = hoursOvertimeTotal.toLong().hours
+    fun calculateOvertime(overtimeTotalDuration: Duration, assignment: Assignment, briefing: Briefing): Overtime {
         require(!overtimeTotalDuration.isNegative()) { "Overtime total duration must not be negative ($overtimeTotalDuration)" }
         val overtimeInRate1 = resolveOvertimeInRate1(overtimeTotalDuration, assignment.isUnionized, briefing)
         val overtimeInRate2 = resolveOvertimeInRate2(assignment, overtimeTotalDuration - overtimeInRate1)

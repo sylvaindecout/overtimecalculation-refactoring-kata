@@ -3,7 +3,6 @@ package fr.sdecout.kata.overtimecalculation
 import org.approvaltests.combinations.CombinationApprovals.verifyAllCombinations
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import java.math.BigDecimal
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
@@ -20,7 +19,7 @@ class SnapshotTest {
         verifyAllCombinations(
             { assignmentDuration, overtimeTotalDuration, isUnionized, watCode, z3, foreign, hbmo ->
                 CompensationCalculator.calculateOvertime(
-                    BigDecimal.valueOf(overtimeTotalDuration),
+                    overtimeTotalDuration.hours,
                     Assignment(isUnionized, assignmentDuration),
                     Briefing(watCode, z3, foreign, hbmo)
                 )
